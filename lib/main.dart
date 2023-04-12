@@ -1,6 +1,6 @@
-import 'package:doctors_portal/DocRegister.dart';
-import 'package:doctors_portal/DocRegisterNext1.dart';
-import 'package:doctors_portal/DoctorLogin.dart';
+import 'package:doctors_portal/Doctor/DocRegister.dart';
+import 'package:doctors_portal/Doctor/DocRegisterNext1.dart';
+import 'package:doctors_portal/Doctor/DoctorLogin.dart';
 import 'package:doctors_portal/Home.dart';
 import 'package:doctors_portal/Loading.dart';
 import 'package:doctors_portal/Patient/PatientDashboard.dart';

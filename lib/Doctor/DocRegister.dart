@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:doctors_portal/DocRegisterNext1.dart';
-import 'package:doctors_portal/DoctorLogin.dart';
+import 'package:doctors_portal/Doctor/DocRegisterNext1.dart';
+import 'package:doctors_portal/Doctor/DoctorLogin.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:doctors_portal/DocRegister.dart';
+import 'package:doctors_portal/Doctor/DocRegister.dart';
+import 'package:doctors_portal/Doctor/DoctorDashboard.dart';
+import 'package:doctors_portal/tosters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:page_transition/page_transition.dart';
-import 'Users/Patient.dart';
 
 class DoctorLogin extends StatefulWidget {
   const DoctorLogin({super.key});
@@ -15,7 +16,26 @@ class DoctorLogin extends StatefulWidget {
 class _DoctorLogin extends State<DoctorLogin> {
   String Uname='' ,Upass='';
   final CollectionReference data =
-  FirebaseFirestore.instance.collection('patients');
+  FirebaseFirestore.instance.collection('doctors');
+  checkuser(context)async{
+    final id=await SessionManager().get('doctor');
+    if(id != null)
+    {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const DoctorDashboard()),
+      );
+      // Navigator.of(context).push(PageTransition(
+      //     child: const PatientDashboard(),
+      //     type: PageTransitionType.leftToRight));
+    }
+  }
+  @override
+  void initState() {
+    super.initState();
+    checkuser(context);
+  }
   @override
   Widget build(BuildContext context) {
     var screenheight = MediaQuery.of(context).size.height;
@@ -61,7 +81,7 @@ class _DoctorLogin extends State<DoctorLogin> {
                           ],
                         ),
                         child: TextField(onChanged: (e){
-                            Uname=e;
+                            Uname = e.replaceAll(' ', '').toLowerCase();
                           },
                           textAlign: TextAlign.center,
                           style: const TextStyle(
@@ -165,9 +185,29 @@ class _DoctorLogin extends State<DoctorLogin> {
                           textStyle: MaterialStatePropertyAll(
                               TextStyle(fontSize: screenwidth * 0.05))),
                       onPressed: () async {
-                        User user = User(Uname, Upass);
-                        print(Uname);
-                       print(data.where('mail=$Uname'));
+                        final querySnapshot = await FirebaseFirestore.instance
+                            .collection('doctors')
+                            .where('email', isEqualTo: Uname)
+                            .get();
+                        dynamic list =
+                        querySnapshot.docs.map((i) => i.data()).toList();
+                        if(list.isNotEmpty)
+                          {
+                            if (!mounted) return;
+                          if (list[0]['password'] == Upass) {
+                            var sessionManager = SessionManager();
+                            sessionManager.set("doctor", Uname);
+                            Toasters().success(context, 'Login Successfuly!!');
+                            Navigator.of(context).push(PageTransition(
+                                child: const DoctorDashboard(),
+                                type: PageTransitionType.leftToRight));
+                          }else{
+                            Toasters().danger(context, 'Wrong Password Entered!');
+                          }
+                          } else{
+                          if (!mounted) return;
+                          Toasters().danger(context, 'User Not Found!!');
+                        }
                         // if(Uname!='' && Upass!='')
                         // await SessionManager().set('patient', user);
                       },

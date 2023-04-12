@@ -3,7 +3,7 @@ import 'package:doctors_portal/Patient/PatientLogin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
-import 'DoctorLogin.dart';
+import 'Doctor/DoctorLogin.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

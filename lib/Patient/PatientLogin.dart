@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:doctors_portal/DocRegister.dart';
+import 'package:doctors_portal/Doctor/DocRegister.dart';
 import 'package:doctors_portal/Patient/PatientDashboard.dart';
 import 'package:doctors_portal/Patient/PatientRegister.dart';
 import 'package:doctors_portal/tosters.dart';
