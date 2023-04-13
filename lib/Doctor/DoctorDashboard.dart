@@ -1,5 +1,8 @@
+import 'package:doctors_portal/Doctor/ConfirmedAppointments.dart';
 import 'package:doctors_portal/Doctor/doctorProfile.dart';
 import 'package:flutter/material.dart';
+
+import 'AppointmentRequests.dart';
 
 class DoctorDashboard extends StatefulWidget {
   const DoctorDashboard({Key? key}) : super(key: key);
@@ -16,7 +19,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
     return Scaffold(
         body: Column(
       children: [
-       Padding(padding: EdgeInsets.fromLTRB(30, 0, 20, 0),child: SizedBox(
+       Padding(padding: const EdgeInsets.fromLTRB(30, 0, 20, 0),child: SizedBox(
             height: screenheight * 0.15,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -52,11 +55,11 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                     children: [
                       GestureDetector(
                           onTap: (){
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) => const TakeAppoint()),
-                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const AppointmentRequests()),
+                            );
                             // QuerySnapshot querySnapshot = await doc.get();
                             //  doclist = querySnapshot.docs.map((doc) => doc.data()).toList();
                           },
@@ -79,7 +82,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                                     flex: 1,
                                     child: Padding(
                                         padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                        child: Text('Appointments Scheduled',
+                                        child: Text('Appointments Requests',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w700,
                                                 fontSize: 16),
@@ -87,7 +90,15 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                                   )
                                 ],
                               ))),
-                      Card(
+                     GestureDetector(
+                       onTap: (){
+                         Navigator.push(
+                           context,
+                           MaterialPageRoute(
+                               builder: (context) => const ConfirmedAppointments()),
+                         );
+                       },
+                         child: Card(
                           elevation: 4,
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
@@ -106,14 +117,14 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                                 flex: 1,
                                 child: Padding(
                                     padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                    child: Text('Completed Appointments',
+                                    child: Text('Confirmed Appointments',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontWeight: FontWeight.w700,
                                             fontSize: 15))),
                               )
                             ],
-                          )),
+                          ))),
                       GestureDetector(
                           onTap: (){
                             Navigator.push(

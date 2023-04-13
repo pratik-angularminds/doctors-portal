@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doctors_portal/Home.dart';
 import 'package:doctors_portal/Patient/editprofile.dart';
-import 'package:doctors_portal/Patient/PatientLogin.dart';
 import 'package:doctors_portal/tosters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
@@ -244,7 +244,7 @@ class _ProfileState extends State<Profile> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const PatientLogin()),
+                              builder: (context) => const Home()),
                         );
                       },
                       title: const Text('Logout'),

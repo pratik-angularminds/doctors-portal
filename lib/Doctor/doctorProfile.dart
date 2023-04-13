@@ -17,13 +17,13 @@ class _DoctorProfileState extends State<DoctorProfile> {
   var oldPass = TextEditingController();
   var newPass = TextEditingController();
   final CollectionReference app =
-  FirebaseFirestore.instance.collection('patient');
+      FirebaseFirestore.instance.collection('doctors');
   _DoctorProfileState() {
     loadData();
   }
   loadData() async {
-    var id = await SessionManager().get('patient');
-    QuerySnapshot querySnapshot = await app.where('mail', isEqualTo: id).get();
+    var id = await SessionManager().get('doctor');
+    QuerySnapshot querySnapshot = await app.where('email', isEqualTo: id).get();
     setState(() {
       patient = querySnapshot.docs.map((item) => item.data()).toList();
     });
@@ -33,15 +33,15 @@ class _DoctorProfileState extends State<DoctorProfile> {
   Widget build(BuildContext context) {
     Future<String> getPatientID() async {
       final CollectionReference doctors =
-      FirebaseFirestore.instance.collection('patient');
+          FirebaseFirestore.instance.collection('doctors');
       QuerySnapshot querySnapshot1 = await doctors.get();
       dynamic doctorlist =
-      querySnapshot1.docs.map((item) => item.data()).toList();
+          querySnapshot1.docs.map((item) => item.data()).toList();
       dynamic count = 0;
       int c = -1;
-      final pmail = patient.isNotEmpty ? patient[0]['mail'] : '';
+      final pmail = patient.isNotEmpty ? patient[0]['email'] : '';
       doctorlist
-          .map((item) => item['mail'] == pmail ? c = count : count++)
+          .map((item) => item['email'] == pmail ? c = count : count++)
           .toList();
       dynamic idSarray = querySnapshot1.docs.map((item) => item.id).toList();
       return idSarray[c];
@@ -76,7 +76,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                           onPressed: () {},
                         ))),
                 Text(
-                  patient.isEmpty ? '' : patient[0]['pname'],
+                  patient.isEmpty ? '' : patient[0]['name'],
                   style: const TextStyle(
                       fontWeight: FontWeight.w600, fontSize: 17),
                 )
@@ -138,7 +138,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                                     child: const Text('Next'),
                                     onPressed: () {
                                       if (patient[0]['password'] !=
-                                          oldPass.text.toString() ||
+                                              oldPass.text.toString() ||
                                           oldPass.text.isEmpty) {
                                         return Toasters().danger(
                                             context, 'Wrong Password Entered!');
@@ -150,11 +150,12 @@ class _DoctorProfileState extends State<DoctorProfile> {
                                             return AlertDialog(
                                               title: const Text(
                                                   'Enter New Password'),
-                                              content: TextFormField(controller: newPass,
+                                              content: TextFormField(
+                                                controller: newPass,
                                                 decoration:
-                                                const InputDecoration(
-                                                    hintText:
-                                                    'Enter Password'),
+                                                    const InputDecoration(
+                                                        hintText:
+                                                            'Enter Password'),
                                                 maxLength: 15,
                                                 obscureText: true,
                                                 validator: (value) {
@@ -174,14 +175,15 @@ class _DoctorProfileState extends State<DoctorProfile> {
                                                   child: const Text('Submit'),
                                                   onPressed: () async {
                                                     var id =
-                                                    await getPatientID();
+                                                        await getPatientID();
                                                     if (!mounted) return;
-                                                    if(newPass.text.isEmpty)
-                                                    {
-                                                      return Toasters().danger(context, 'Password Required!!');
+                                                    if (newPass.text.isEmpty) {
+                                                      return Toasters().danger(
+                                                          context,
+                                                          'Password Required!!');
                                                     }
                                                     FirebaseFirestore.instance
-                                                        .collection('patient')
+                                                        .collection('doctors')
                                                         .doc(id)
                                                         .update({
                                                       'password': newPass.text,
@@ -240,8 +242,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                         Toasters().success(context, 'Logged out!');
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const Home()),
+                          MaterialPageRoute(builder: (context) => const Home()),
                         );
                       },
                       title: const Text('Logout'),

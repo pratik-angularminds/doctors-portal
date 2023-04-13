@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 class Calender extends StatefulWidget {
   final dynamic doc;
+
   const Calender(this.doc, {super.key});
 
   @override
@@ -15,9 +16,17 @@ class Calender extends StatefulWidget {
 
 class Slots {
   String? time;
-  bool completed = false, selected = false, lunch = true, booked = false;
+  bool completed = false,
+      selected = false,
+      rejected = false,
+      lunch = true,
+      booked = false,
+      confirmed = false;
+
   Slots(
       {this.time,
+      required this.confirmed,
+      required this.rejected,
       required this.completed,
       required this.booked,
       required this.lunch,
@@ -64,7 +73,9 @@ class _MyHomePageState extends State<Calender> {
   final DateTime now = DateTime.now();
   final DateFormat formatter = DateFormat('yyyy-MM-dd');
   dynamic doc;
+
   _MyHomePageState(this.doc);
+
   // String formatted = formatter.format(now);
 
   @override
@@ -93,7 +104,8 @@ class _MyHomePageState extends State<Calender> {
 
   loadData() async {
     var docId = await getDoctorID();
-    QuerySnapshot querySnapshot = await app.where('docId',isEqualTo: docId).get();
+    QuerySnapshot querySnapshot =
+        await app.where('docId', isEqualTo: docId).get();
     // String formatted = formatter.format(now);
     setState(() {
       list = querySnapshot.docs.map((doc) => doc.data()).toList();
@@ -108,7 +120,9 @@ class _MyHomePageState extends State<Calender> {
       time
           .map((i) => tempapplist.add(Slots(
               time: i,
+              confirmed: false,
               completed: false,
+              rejected: false,
               booked: false,
               lunch: i == '12:00AM' || i == '12:30AM' ? true : false,
               selected: false)))
@@ -117,6 +131,7 @@ class _MyHomePageState extends State<Calender> {
   }
 
   Widget slotPreview(capplist) {
+    print(capplist);
     if (!capplist.isEmpty) {
       tempapplist
           .map((item) => {
@@ -124,12 +139,37 @@ class _MyHomePageState extends State<Calender> {
                   {
                     if (capplist[i]['timeFrom'] == item.time)
                       {
-                        capplist[i]['status'] == 'Completed'?
-                          item.completed = true:item.completed = false,
-                        capplist[i]['status'] == 'Booked'?
-                          item.booked = true :item.booked = false
+                        capplist[i]['status'] == 'Completed'
+                            ? item.completed = true
+                            : item.completed = false,
+                        capplist[i]['status'] == 'Confirmed'
+                            ? item.confirmed = true
+                            : item.confirmed = false,
+                        capplist[i]['status'] == 'Booked'
+                            ? item.booked = true
+                            : item.booked = false,
+                        capplist[i]['status'] == 'Rejected'
+                            ? item.rejected = true
+                            : item.rejected = false,
+                      }
+                    else
+                      {
+                        item.completed = false,
+                        item.confirmed = false,
+                        item.booked = false,
+                        item.rejected = false,
                       }
                   }
+              })
+          .toList();
+    }
+    if (capplist.isEmpty) {
+      tempapplist
+          .map((item) => {
+                item.completed = false,
+                item.confirmed = false,
+                item.booked = false,
+                item.rejected = false,
               })
           .toList();
     }
@@ -165,11 +205,15 @@ class _MyHomePageState extends State<Calender> {
                         ? Colors.grey
                         : item.completed
                             ? Colors.greenAccent
-                            : item.booked
-                                ? Colors.indigoAccent
-                                : item.selected
-                                    ? Colors.yellowAccent
-                                    : Colors.white,
+                            : item.confirmed
+                                ? Colors.grey[350]
+                                : item.rejected
+                                    ? Colors.redAccent
+                                    : item.booked
+                                        ? Colors.indigoAccent
+                                        : item.selected
+                                            ? Colors.yellowAccent
+                                            : Colors.white,
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -177,10 +221,13 @@ class _MyHomePageState extends State<Calender> {
                           Text(
                             item.time.toString(),
                             style: TextStyle(
-                                color:
-                                    item.completed || item?.lunch || item.booked
-                                        ? Colors.white
-                                        : Colors.black),
+                                color: item.completed ||
+                                        item?.lunch ||
+                                        item.booked ||
+                                        item.confirmed ||
+                                        item.rejected
+                                    ? Colors.white
+                                    : Colors.black),
                           ),
                           Container(
                             child: item?.lunch
@@ -193,15 +240,27 @@ class _MyHomePageState extends State<Calender> {
                                         'Completed',
                                         style: TextStyle(color: Colors.white),
                                       )
-                                    : item.booked
+                                    : item.confirmed
                                         ? const Text(
-                                            'Booked',
+                                            'Confirmed',
                                             style:
                                                 TextStyle(color: Colors.white),
                                           )
-                                        : !item.booked
-                                            ? const Text('Available')
-                                            : const Text(''),
+                                        : item.rejected
+                                            ? const Text(
+                                                'Rejected',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              )
+                                            : item.booked
+                                                ? const Text(
+                                                    'Booked',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  )
+                                                : !item.booked
+                                                    ? const Text('Available')
+                                                    : const Text(''),
                           )
                         ]),
                   )))
@@ -224,8 +283,13 @@ class _MyHomePageState extends State<Calender> {
                   .where(
                       (e) => int.parse(e['date'].split('-')[2]) == value?.day)
                   .toList();
-              tempapplist.map((item)=>
-              {item.completed = false, item.booked = false,item.selected=false}).toList();
+              tempapplist
+                  .map((item) => {
+                        item.completed = false,
+                        item.booked = false,
+                        item.selected = false
+                      })
+                  .toList();
             });
           },
         ),

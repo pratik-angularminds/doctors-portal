@@ -33,15 +33,15 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<String> getPatientID() async {
-    final CollectionReference doctors =
+    final CollectionReference patients =
         FirebaseFirestore.instance.collection('patient');
-    QuerySnapshot querySnapshot1 = await doctors.get();
-    dynamic doctorlist =
+    QuerySnapshot querySnapshot1 = await patients.get();
+    dynamic patientlist =
         querySnapshot1.docs.map((item) => item.data()).toList();
     dynamic count = 0;
     int c = -1;
     final pmail = patient.isNotEmpty ? patient[0]['mail'] : '';
-    doctorlist
+    patientlist
         .map((item) => item['mail'] == pmail ? c = count : count++)
         .toList();
     dynamic idSarray = querySnapshot1.docs.map((item) => item.id).toList();
