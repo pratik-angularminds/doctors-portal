@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctors_portal/Doctor/DoctorLogin.dart';
-import 'package:doctors_portal/Patient/PatientDashboard.dart';
 import 'package:flutter/material.dart';
 
 class DocRegisterNext1 extends StatelessWidget {
@@ -10,7 +9,8 @@ class DocRegisterNext1 extends StatelessWidget {
       add = '',
       city = '',
       deg = '',
-      spec = '';
+      spec = '',
+  contact='';
   final CollectionReference doc =
       FirebaseFirestore.instance.collection('doctors');
   DocRegisterNext1(this.name, this.mail, this.pass, {super.key});
@@ -102,6 +102,22 @@ class DocRegisterNext1 extends StatelessWidget {
                     prefixIcon: Icon(Icons.favorite_border_rounded))),
           ),
           Padding(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            child: TextField(
+                onChanged: (text) {
+                  contact = text;
+                },
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      borderSide: BorderSide.none,
+                    ),
+                    hintText: 'Contact',
+                    filled: true,
+                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.grade))),
+          ),
+          Padding(
               padding: const EdgeInsets.fromLTRB(25, 10, 25, 10),
               child: TextButton(
                 style: ButtonStyle(
@@ -122,7 +138,7 @@ class DocRegisterNext1 extends StatelessWidget {
                       add != '' &&
                       city != '' &&
                       deg != '' &&
-                      spec != '') {
+                      spec != '' && contact.isNotEmpty) {
                     await doc.add({
                       'name': name,
                       'password': pass,
@@ -130,7 +146,8 @@ class DocRegisterNext1 extends StatelessWidget {
                       'address': add,
                       'city': city,
                       'degree': deg,
-                      'speciality': spec
+                      'speciality': spec,
+                      'contact':contact
                     });
                   }
                   // dynamic data=doc.snapshots();

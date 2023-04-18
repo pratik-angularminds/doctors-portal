@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:calendar_appbar/calendar_appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:doctors_portal/Patient/PatientDashboard.dart';
+import 'package:doctors_portal/Slot/ConfirmAppoint.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -41,7 +41,7 @@ class _MyHomePageState extends State<Calender> {
   List applist = [];
   List list = [];
   String changedDate = '';
-  dynamic finalSlot = {
+  final dynamic finalSlot = {
     'slot': '',
     'status': '',
     'date': '',
@@ -131,7 +131,6 @@ class _MyHomePageState extends State<Calender> {
   }
 
   Widget slotPreview(capplist) {
-    print(capplist);
     if (!capplist.isEmpty) {
       tempapplist
           .map((item) => {
@@ -295,6 +294,10 @@ class _MyHomePageState extends State<Calender> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
+            if(finalSlot['date'].isEmpty)
+              {
+                finalSlot['date']=formatter.format(now);
+              }
             if (finalSlot['slot'] == '') {
               var snackBar =
                   const SnackBar(content: Text('Please Select Slot!'));
@@ -309,14 +312,12 @@ class _MyHomePageState extends State<Calender> {
               Widget continueButton = TextButton(
                 child: const Text("Confirm"),
                 onPressed: () {
+                  final dynamic selectedDoctor=widget.doc;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const PatientDashboard()),
+                        builder: (context) => ConfirmAppoint(doctor: selectedDoctor,finalslot: finalSlot)),
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      backgroundColor: Color(0xFF66BB6A),
-                      content: Text('Successfully Appointment Booked')));
                 },
               );
               AlertDialog alert = AlertDialog(
@@ -342,6 +343,81 @@ class _MyHomePageState extends State<Calender> {
           backgroundColor: Colors.indigoAccent,
         ),
         backgroundColor: const Color(0xEDEDEDFF),
-        body: slotPreview(applist));
+        body: Column(
+          children: [
+            Wrap(
+              children: [
+                TextButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.square,
+                    size: 24.0,color:Colors.yellowAccent ,
+                  ),
+                  label: const Text(
+                    'Selected',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.square,color: Colors.indigoAccent,
+                    size: 24.0,
+                  ),
+                  label: const Text(
+                    'Booked',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.square,color: Colors.redAccent,
+                    size: 24.0,
+                  ),
+                  label: const Text(
+                    'rejected',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                )
+            ,
+                TextButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.square,color: Colors.greenAccent,
+                    size: 24.0,
+                  ),
+                  label: const Text(
+                    'Completed',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.square,color: Colors.white,
+                    size: 24.0,
+                  ),
+                  label: const Text(
+                    'Available',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.square,color: Color(0xFFD6D6D6),
+                    size: 24.0,
+                  ),
+                  label: const Text(
+                    'Confirmed',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ],
+            ),
+            Expanded(child: slotPreview(applist))
+          ],
+        ));
   }
 }

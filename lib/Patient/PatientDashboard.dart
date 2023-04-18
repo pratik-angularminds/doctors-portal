@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'package:doctors_portal/Patient/TakeAppoint.dart';
 import 'package:doctors_portal/Patient/profile.dart';
+import 'package:doctors_portal/Patient/view_appointments.dart';
 import 'package:flutter/material.dart';
 
 class PatientDashboard extends StatelessWidget {
@@ -81,7 +82,11 @@ class PatientDashboard extends StatelessWidget {
                           )
                         ],
                       ))),
-              Card(
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute( builder: (context) => const ViewAppointments()));
+                },
+                  child:Card(
                   elevation: 4,
                   color: Colors.white,
                   shape: RoundedRectangleBorder(
@@ -107,7 +112,7 @@ class PatientDashboard extends StatelessWidget {
                                     fontSize: 15))),
                       )
                     ],
-                  )),
+                  ))),
               GestureDetector(
                 onTap: (){
                   Navigator.push(

@@ -6,7 +6,6 @@ import 'package:doctors_portal/Patient/editprofile.dart';
 import 'package:doctors_portal/tosters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
-
 import 'PatientDashboard.dart';
 
 class Profile extends StatefulWidget {

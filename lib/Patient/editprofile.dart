@@ -7,6 +7,7 @@ import 'PatientDashboard.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
+
   @override
   State<EditProfile> createState() => _EditProfileState();
 }
@@ -18,9 +19,11 @@ class _EditProfileState extends State<EditProfile> {
   var contact = TextEditingController();
   final CollectionReference app =
       FirebaseFirestore.instance.collection('patient');
+
   _EditProfileState() {
     loadData();
   }
+
   loadData() async {
     var id = await SessionManager().get('patient');
     QuerySnapshot querySnapshot = await app.where('mail', isEqualTo: id).get();
@@ -61,24 +64,28 @@ class _EditProfileState extends State<EditProfile> {
             TextButton(
                 onPressed: () async {
                   var id = await getPatientID();
-                  FirebaseFirestore.instance
-                      .collection('patient')
-                      .doc(id)
-                      .update({
-                    'pname': name.text,
-                    'contact': contact.text,
-                    'mail': email.text,
-                  }).then((value){
-                            Toasters().success(
-                                context, 'Profile Updated Successfully!!');
-                  Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                  builder: (context) => const PatientDashboard()),
-                  );
-                          });
-                  SessionManager().set('patient',email.text);
-                  loadData();
+                  if (name.text.isNotEmpty &&
+                      contact.text.isNotEmpty &&
+                      email.text.isNotEmpty) {
+                    FirebaseFirestore.instance
+                        .collection('patient')
+                        .doc(id)
+                        .update({
+                      'pname': name.text,
+                      'contact': contact.text,
+                      'mail': email.text,
+                    }).then((value) {
+                      Toasters()
+                          .success(context, 'Profile Updated Successfully!!');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const PatientDashboard()),
+                      );
+                    });
+                    SessionManager().set('patient', email.text);
+                    loadData();
+                  }
                 },
                 child: const Text(
                   'Save',

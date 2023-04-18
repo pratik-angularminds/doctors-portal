@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doctors_portal/Doctor/DocEditProfile.dart';
 import 'package:doctors_portal/Home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
@@ -100,11 +101,11 @@ class _DoctorProfileState extends State<DoctorProfile> {
                         ),
                       ),
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => const EditProfile()),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const DocEditProfile()),
+                        );
                       },
                       title: const Text('Edit Profile'),
                       trailing: const Icon(Icons.keyboard_arrow_right),
