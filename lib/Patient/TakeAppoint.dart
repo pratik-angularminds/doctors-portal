@@ -328,7 +328,7 @@ class _TakeAppointState extends State<TakeAppoint> {
                     ),
                    Row(children: [SizedBox(width: 150,
                         child:Text(
-                     'Address: ${doctor['address']}' ?? ' ',
+                     'Address: ${doctor['address']}',
                       style: const TextStyle(fontSize: 13, color: Colors.grey),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -385,7 +385,7 @@ class _TakeAppointState extends State<TakeAppoint> {
         ),
         drawer: Scaffold(
           resizeToAvoidBottomInset: false,
-          appBar: AppBar(
+          appBar: AppBar(backgroundColor: Colors.blueAccent,
             title: const Text(
               'Select Categories',
               style: TextStyle(color: Colors.white),
@@ -444,9 +444,9 @@ class _TakeAppointState extends State<TakeAppoint> {
                     children: [
                       Expanded(
                           flex: 3,
-                          child: TextButton(
+                          child: TextButton(style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.redAccent)),
                             onPressed: () {Navigator.pop(context);},
-                            child: const Text('cancel'),
+                            child: const Text('cancel',style: TextStyle(color: Colors.white),),
                           )),
                       const Spacer(
                         flex: 1,
@@ -454,6 +454,7 @@ class _TakeAppointState extends State<TakeAppoint> {
                       Expanded(
                           flex: 3,
                           child: TextButton(
+                              style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.blueAccent)),
                             onPressed: () {
                               if(_selectedItems.isEmpty) {
                                 return Toasters().danger(context, 'Please Select the city');
@@ -461,7 +462,7 @@ class _TakeAppointState extends State<TakeAppoint> {
                               getFilterDocs();
                               Navigator.pop(context);
                             },
-                            child: const Text('submit'),
+                            child: const Text('submit',style: TextStyle(color: Colors.white),),
                           ))
                     ],
                   )

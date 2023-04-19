@@ -72,7 +72,7 @@ class _ConfirmedAppointmentsState extends State<ConfirmedAppointments> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(centerTitle: true,
           backgroundColor: Colors.indigoAccent, title: const Text('Confirmed')),
       body: ListView(
         children: [

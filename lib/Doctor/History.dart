@@ -2,16 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 
-import 'ViewAppointmentSingle.dart';
-
-class ViewAppointments extends StatefulWidget {
-  const ViewAppointments({Key? key}) : super(key: key);
+class History extends StatefulWidget {
+  const History({Key? key}) : super(key: key);
 
   @override
-  State<ViewAppointments> createState() => _ViewAppointmentsState();
+  State<History> createState() => _HistoryState();
 }
 
-class _ViewAppointmentsState extends State<ViewAppointments> {
+class _HistoryState extends State<History> {
   final CollectionReference app =
   FirebaseFirestore.instance.collection('appointments');
   List doctor = [];
@@ -19,11 +17,11 @@ class _ViewAppointmentsState extends State<ViewAppointments> {
   List patients = [];
 
   getDoctorID() async {
-    var id = await SessionManager().get('patient');
+    var id = await SessionManager().get('doctors');
     final CollectionReference doctors =
-    FirebaseFirestore.instance.collection('patient');
+    FirebaseFirestore.instance.collection('doctors');
     QuerySnapshot querySnapshot =
-    await doctors.where('mail', isEqualTo: id).get();
+    await doctors.where('email', isEqualTo: id).get();
     setState(() {
       doctor = querySnapshot.docs.map((item) => item.data()).toList();
     });
@@ -32,9 +30,9 @@ class _ViewAppointmentsState extends State<ViewAppointments> {
     querySnapshot1.docs.map((item) => item.data()).toList();
     dynamic count = 0;
     int c = -1;
-    final dmail = doctor.isNotEmpty ? doctor[0]['mail'] : '';
+    final dmail = doctor.isNotEmpty ? doctor[0]['email'] : '';
     doctorlist
-        .map((item) => item['mail'] == dmail ? c = count : count++)
+        .map((item) => item['email'] == dmail ? c = count : count++)
         .toList();
     List idSarray = querySnapshot1.docs.map((item) => item.id).toList();
     return idSarray[c];
@@ -43,51 +41,64 @@ class _ViewAppointmentsState extends State<ViewAppointments> {
   loadData() async {
     String docid = await getDoctorID();
     QuerySnapshot querySnapshot =
-    await app.where('patientId', isEqualTo: docid).get();
+    await app.where('docId', isEqualTo: docid).get();
     setState(() {
       appointList = querySnapshot.docs.map((item) => item.data()).toList();
     });
     CollectionReference patient =
-    FirebaseFirestore.instance.collection('doctors');
+    FirebaseFirestore.instance.collection('patient');
     DocumentSnapshot querySnapshot1;
+    final DateTime now = DateTime.now();
     for (int i = 0; i < appointList.length; i++) {
-      querySnapshot1 = await patient.doc(appointList[i]['docId']).get();
-          setState(() {
-            patients.add(
-                {'appoint': appointList[i], 'doctor': querySnapshot1.data()});
-          });
+      querySnapshot1 = await patient.doc(appointList[i]['patientId']).get();
+      if (int.parse(appointList[i]['date'].split('-')[0]) <= now.year &&
+          int.parse(appointList[i]['date'].split('-')[1]) <= now.month &&
+          int.parse(appointList[i]['date'].split('-')[2]) < now.day) {
+        setState(() {
+          patients.add(
+              {'appoint': appointList[i], 'patient': querySnapshot1.data()});
+        });
+      }
     }
-    print(patients);
   }
-_ViewAppointmentsState(){
-    loadData();
 
-}
+  _HistoryState() {
+    loadData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(centerTitle: true,
-          backgroundColor: Colors.indigoAccent, title: const Text('Appointments')),
+          backgroundColor: Colors.indigoAccent, title: const Text('History')),
       body: ListView(
         children: [
           ...patients.map((item) => Container(
+              padding: const EdgeInsets.fromLTRB(0, 5, 0, 1),
               decoration: const BoxDecoration(
-                  border: Border(bottom: BorderSide(width: 0.4))),
-              child: ListTile(onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder:(builder)=> ViewAppointmentSingle(item)));
-              },
+                  border: Border(bottom: BorderSide(width: 0.1))),
+              child: ListTile(
                 contentPadding: const EdgeInsets.all(5),
                 style: ListTileStyle.list,
-                trailing: Text(item['appoint']['status'],
-                    style: const TextStyle(color: Colors.blueAccent)) ,
                 leading: Image.asset(
-                  'assets/Icons/doctor.png',
+                  'assets/patient.png',
                 ),
-                title: Text(item['doctor']['name'],
+                title: Text(item['patient']['pname'],
                     style: const TextStyle(color: Colors.greenAccent)),
                 subtitle: Text(
                     'Date: ${item['appoint']['date']}   Time: ${item['appoint']['timeFrom']}',
                     style: const TextStyle(fontSize: 13)),
+                trailing: Wrap(
+                  spacing: 12,
+                  children: <Widget>[
+                    TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          '${item['appoint']['status']}',
+                          style: const TextStyle(color: Colors.greenAccent),
+                        )), // icon-1
+                  ],
+                ),
               )))
         ],
       ),

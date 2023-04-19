@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctors_portal/Doctor/DocEditProfile.dart';
+import 'package:doctors_portal/Doctor/DoctorDashboard.dart';
 import 'package:doctors_portal/Home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
@@ -14,19 +15,21 @@ class DoctorProfile extends StatefulWidget {
 }
 
 class _DoctorProfileState extends State<DoctorProfile> {
-  List patient = [];
-  var oldPass = TextEditingController();
-  var newPass = TextEditingController();
+  List doctor = [];
+  var oldPass = TextEditingController(text:'');
+  var newPass = TextEditingController(text:'');
   final CollectionReference app =
       FirebaseFirestore.instance.collection('doctors');
+
   _DoctorProfileState() {
     loadData();
   }
+
   loadData() async {
     var id = await SessionManager().get('doctor');
     QuerySnapshot querySnapshot = await app.where('email', isEqualTo: id).get();
     setState(() {
-      patient = querySnapshot.docs.map((item) => item.data()).toList();
+      doctor = querySnapshot.docs.map((item) => item.data()).toList();
     });
   }
 
@@ -40,7 +43,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
           querySnapshot1.docs.map((item) => item.data()).toList();
       dynamic count = 0;
       int c = -1;
-      final pmail = patient.isNotEmpty ? patient[0]['email'] : '';
+      final pmail = doctor.isNotEmpty ? doctor[0]['email'] : '';
       doctorlist
           .map((item) => item['email'] == pmail ? c = count : count++)
           .toList();
@@ -77,7 +80,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                           onPressed: () {},
                         ))),
                 Text(
-                  patient.isEmpty ? '' : patient[0]['name'],
+                  doctor.isEmpty ? '' : doctor[0]['name'],
                   style: const TextStyle(
                       fontWeight: FontWeight.w600, fontSize: 17),
                 )
@@ -138,7 +141,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                                   TextButton(
                                     child: const Text('Next'),
                                     onPressed: () {
-                                      if (patient[0]['password'] !=
+                                      if (doctor[0]['password'] !=
                                               oldPass.text.toString() ||
                                           oldPass.text.isEmpty) {
                                         return Toasters().danger(
@@ -192,12 +195,11 @@ class _DoctorProfileState extends State<DoctorProfile> {
                                                       Toasters().success(
                                                           context,
                                                           'Password Updated Successfully!!');
-                                                      // Navigator.push(
-                                                      //   context,
-                                                      //   MaterialPageRoute(
-                                                      //       builder: (context) =>
-                                                      //       const PatientDashboard()),
-                                                      // );
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (builder) =>
+                                                                  const DoctorDashboard()));
                                                     });
                                                   },
                                                 ),

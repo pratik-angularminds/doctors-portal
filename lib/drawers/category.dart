@@ -1,5 +1,6 @@
 import 'package:doctors_portal/Patient/TakeAppoint.dart';
 import 'package:flutter/material.dart';
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
 // This widget is reusable
 class MultiSelect extends StatefulWidget {
   final List<String> items;
+
   const MultiSelect({Key? key, required this.items}) : super(key: key);
 
   @override
@@ -91,6 +93,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<String> _selectedItems = [];
   List<String> _selectedcat = [];
+
   void _showMultiSelect() async {
     final List<String> items = [
       'Ahmednagar',
@@ -220,83 +223,92 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(
           'Select Categories',
           style: TextStyle(color: Colors.deepPurpleAccent),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
-        child:SingleChildScrollView(
-          child:Column(
+          padding: const EdgeInsets.all(20),
+          child: SingleChildScrollView(
+              child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children:[
-            ElevatedButton(
-              onPressed: _showMultiSelect,
-              child: const Text('Select City'),
-            ),
-            const Divider(
-              height: 30,
-            ),
-            Wrap(
-              children: _selectedItems
-                  .map((e) => Container(
-                      margin: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      child: Chip(
-                        shadowColor: Colors.white,
-                        label: Text(e),
-                        backgroundColor: Colors.deepPurpleAccent,
-                        labelStyle: const TextStyle(color: Colors.white),
-                      )))
-                  .toList(),
-            ),
-            const Divider(
-              height: 30,
-              color: Colors.white,
-            ),
-            ElevatedButton(
-              onPressed: _showdoctorcat,
-              child: const Text('Select Type of Doctor'),
-            ),
-            const Divider(
-              height: 30,
-            ),
-            Wrap(
-              children: _selectedcat
-                  .map((e) => Container(
-                      margin: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      child: Chip(
-                        label: Text(e),
-                        backgroundColor: Colors.deepPurpleAccent,
-                        labelStyle: const TextStyle(color: Colors.white),
-                      )))
-                  .toList(),
-            ),
+            children: [
+              ElevatedButton(
+                onPressed: _showMultiSelect,
+                child: const Text('Select City'),
+              ),
+              const Divider(
+                height: 30,
+              ),
+              Wrap(
+                children: _selectedItems
+                    .map((e) => Container(
+                        margin: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                        child: Chip(
+                          shadowColor: Colors.white,
+                          label: Text(e),
+                          backgroundColor: Colors.deepPurpleAccent,
+                          labelStyle: const TextStyle(color: Colors.white),
+                        )))
+                    .toList(),
+              ),
               const Divider(
                 height: 30,
                 color: Colors.white,
               ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-              Expanded(
-                flex: 3,
-                 child: FloatingActionButton(onPressed: (){},child: const Text('cancel'),))
-              ,const Spacer(flex: 1,),
-              Expanded(
-                  flex:3,
-                  child:FloatingActionButton(onPressed: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TakeAppoint()),
-                    );
-                  },child: const Text('submit'),))
-            ],)
-          ],)
-        )
-      ),
+              ElevatedButton(
+                onPressed: _showdoctorcat,
+                child: const Text('Select Type of Doctor'),
+              ),
+              const Divider(
+                height: 30,
+              ),
+              Wrap(
+                children: _selectedcat
+                    .map((e) => Container(
+                        margin: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                        child: Chip(
+                          label: Text(e),
+                          backgroundColor: Colors.deepPurpleAccent,
+                          labelStyle: const TextStyle(color: Colors.white),
+                        )))
+                    .toList(),
+              ),
+              const Divider(
+                height: 30,
+                color: Colors.white,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Expanded(
+                      flex: 3,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        child: const Text('cancel'),
+                      )),
+                  const Spacer(
+                    flex: 1,
+                  ),
+                  Expanded(
+                      flex: 3,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const TakeAppoint()),
+                          );
+                        },
+                        child: const Text('submit'),
+                      ))
+                ],
+              )
+            ],
+          ))),
     );
   }
 }

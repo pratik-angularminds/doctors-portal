@@ -89,7 +89,7 @@ class _AppointmentRequestsState extends State<AppointmentRequests> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+        appBar: AppBar(centerTitle: true,
         backgroundColor: Colors.indigoAccent,
         title: const Text('Requests')),
       body: ListView(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 import '../tosters.dart';
+import 'DoctorDashboard.dart';
 
 class DocEditProfile extends StatefulWidget {
   const DocEditProfile({Key? key}) : super(key: key);
@@ -18,12 +19,11 @@ class _DocEditProfileState extends State<DocEditProfile> {
   var contact = TextEditingController();
   var degree = TextEditingController();
   var address = TextEditingController();
-  var specialController = TextEditingController();
-  var cityController = TextEditingController();
+  var specialController = TextEditingController(text: 'Dentists');
+  var cityController = TextEditingController(text: 'Pune');
   final CollectionReference app =
       FirebaseFirestore.instance.collection('doctors');
-  final GlobalKey _dropdown1key= GlobalKey();
-  final GlobalKey _dropdown2key= GlobalKey();
+
   _DocEditProfileState() {
     loadData();
   }
@@ -33,14 +33,15 @@ class _DocEditProfileState extends State<DocEditProfile> {
     QuerySnapshot querySnapshot = await app.where('email', isEqualTo: id).get();
     setState(() {
       doctor = querySnapshot.docs.map((item) => item.data()).toList();
+      name.text = doctor[0]['name'];
+      email.text = doctor[0]['email'];
+      contact.text = doctor[0]['contact'];
+      cityController.text = doctor[0]['city'];
+      specialController.text = doctor[0]['speciality'];
+      address.text = doctor[0]['address'];
+      degree.text = doctor[0]['degree'];
     });
-    name.text = doctor[0]['name'];
-    email.text = doctor[0]['email'];
-    contact.text = doctor[0]['contact'];
-    cityController.text = doctor[0]['city'];
-    specialController.text = doctor[0]['speciality'];
-    address.text = doctor[0]['address'];
-    degree.text = doctor[0]['degree'];
+
   }
 
   Future<String> getPatientID() async {
@@ -59,7 +60,7 @@ class _DocEditProfileState extends State<DocEditProfile> {
     return idSarray[c];
   }
 
-  final List<String> special = [
+  final specialEntries= [
     'Internal medicine',
     'Pediatrics',
     'Surgery',
@@ -113,8 +114,13 @@ class _DocEditProfileState extends State<DocEditProfile> {
     'Hospital medicine',
     'Neuroradiology',
     'Pediatric cardiology'
-  ];
-  final List<String> City = [
+  ].map<DropdownMenuItem<String>>((String value) {
+    return DropdownMenuItem<String>(
+      value: value,
+      child: Text(value),
+    );
+  }).toList();
+  final cityEntries= [
     'Ahmednagar',
     'Akola',
     'Amravati',
@@ -150,63 +156,52 @@ class _DocEditProfileState extends State<DocEditProfile> {
     'Wardha',
     'Washim',
     'Yavatmal',
-  ];
-  String selectedColor = '';
-  String selectedCity = '';
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-  }
+  ].map<DropdownMenuItem<String>>((String value) {
+    return DropdownMenuItem<String>(
+      value: value,
+      child: Text(value),
+    );
+  }).toList();
+
+  bool showPassword = false;
+
   @override
   Widget build(BuildContext context) {
-    var screenheight = MediaQuery.of(context).size.height;
-    final List<DropdownMenuEntry> colorEntries = <DropdownMenuEntry>[];
-    for (final spec in special) {
-      colorEntries
-          .add(DropdownMenuEntry(value: spec, label: spec, enabled: true));
-    }
-    final List<DropdownMenuEntry> cityEntries = <DropdownMenuEntry>[];
-    for (final city in City) {
-      cityEntries
-          .add(DropdownMenuEntry(value: city, label: city, enabled: true));
-    }
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
           backgroundColor: Colors.indigoAccent,
           title: const Text('Edit Profile'),
           actions: [
             TextButton(
                 onPressed: () async {
-                  // var id = await getPatientID();print(name.text);
-                  // didChangeDependencies();
-                  // if (name.text.isNotEmpty &&
-                  //     contact.text.isNotEmpty &&
-                  //     email.text.isNotEmpty) {
-                  //   FirebaseFirestore.instance
-                  //       .collection('doctors')
-                  //       .doc(id)
-                  //       .update({
-                  //     'name': name.text,
-                  //     'contact': contact.text,
-                  //     'email': email.text,
-                  //     'degree':degree.text,
-                  //     'city':cityController.text,
-                  //     'speciality': specialController.text,
-                  //     'address':address.text,
-                  //   }).then((value) {
-                  //     Toasters()
-                  //         .success(context, 'Profile Updated Successfully!!');
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(
-                  //           builder: (context) => const DoctorDashboard()),
-                  //     );
-                  //   });
-                  //   SessionManager().set('doctor', email.text);
-                  //   loadData();
-                  // }
+                  var id = await getPatientID();
+                  didChangeDependencies();
+                  if (name.text.isNotEmpty &&
+                      contact.text.isNotEmpty &&
+                      email.text.isNotEmpty) {
+                    FirebaseFirestore.instance
+                        .collection('doctors')
+                        .doc(id)
+                        .update({
+                      'name': name.text,
+                      'contact': contact.text,
+                      'email': email.text,
+                      'degree': degree.text,
+                      'city': cityController.text,
+                      'speciality': specialController.text,
+                      'address': address.text,
+                    }).then((value) {
+                      Toasters()
+                          .success(context, 'Profile Updated Successfully!!');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const DoctorDashboard()),
+                      );
+                    });
+                    SessionManager().set('doctor', email.text);
+                    loadData();
+                  }
                 },
                 child: const Text(
                   'Save',
@@ -214,174 +209,138 @@ class _DocEditProfileState extends State<DocEditProfile> {
                 ))
           ],
           centerTitle: true),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-              flex: 1,
-              child: Container(
-                height: screenheight * 0.2,
-                decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: [
-                          Colors.orange,
-                          Colors.orangeAccent,
-                          Colors.red,
-                          Colors.redAccent
-                          //add more colors for gradient
-                        ],
-                        begin: Alignment.topLeft, //begin of the gradient color
-                        end: Alignment.bottomRight, //end of the gradient color
-                        stops: [0, 0.2, 0.5, 0.8]),
-                    color: Colors.blue),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+      body: Container(
+        padding: const EdgeInsets.only(left: 16, top: 25, right: 16),
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: ListView(
+            children: [
+              const SizedBox(
+                height: 15,
+              ),
+              Center(
+                child: Stack(
                   children: [
-                    ListTile(
-                      contentPadding: const EdgeInsets.all(10),
-                      leading: Container(
-                        width: 60,
-                        height: 70,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
+                    Container(
+                      width: 130,
+                      height: 130,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 4,
+                              color: Theme.of(context).scaffoldBackgroundColor),
+                          boxShadow: [
+                            BoxShadow(
+                                spreadRadius: 2,
+                                blurRadius: 10,
+                                color: Colors.black.withOpacity(0.1),
+                                offset: const Offset(0, 10))
+                          ],
                           shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.person, size: 30),
-                          color: Colors.indigoAccent,
-                          onPressed: () {},
-                        ),
-                      ),
-                      title: Text(
-                        doctor.isEmpty ? '' : doctor[0]['name'],
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 17),
-                      ),
-                      subtitle: const Text(
-                        'Online',
-                        style: TextStyle(color: Colors.white, fontSize: 14),
-                      ),
-                    )
+                          image: const DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage('assets/Icons/doctor.png'),
+                          )),
+                    ),
+                    Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              width: 4,
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                            ),
+                            color: Colors.green,
+                          ),
+                          child: const Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                          ),
+                        )),
                   ],
                 ),
-              )),
-          Expanded(
-              flex: 3,
-              child: Container(
-                  padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                  child: ListView(
-                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                    children: [
-                      TextField(
-                          controller: name,
-                          decoration: const InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 2, color: Colors.indigoAccent),
-                              ),
-                              label: Text(
-                                'NAME',
-                                style: TextStyle(color: Colors.grey),
-                              ))),
-                      TextField(
-                          controller: email,
-                          decoration: const InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 2, color: Colors.indigoAccent),
-                              ),
-                              label: Text(
-                                'E-MAIL',
-                                style: TextStyle(color: Colors.grey),
-                              ))),
-                      TextField(
-                          controller: contact,
-                          decoration: const InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                //<-- SEE HERE
-                                borderSide: BorderSide(
-                                    width: 2, color: Colors.indigoAccent),
-                              ),
-                              label: Text(
-                                'CONTACT',
-                                style: TextStyle(color: Colors.grey),
-                              ))),
-                      Wrap(children: [
-                        DropdownMenu(key:_dropdown2key,
-                          inputDecorationTheme: const InputDecorationTheme(
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide.none,
-                              )),
-                          initialSelection: doctor.isNotEmpty?doctor[0]['city']:'',
-                          label: const Text(
-                            'CITY',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                          dropdownMenuEntries: cityEntries,
-                          onSelected: (c) {
-                            setState(() {
-                              selectedCity = c;
-                            });
-                          },
-                        ),
-                        DropdownMenu(key: _dropdown1key,
-                          inputDecorationTheme: const InputDecorationTheme(
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide.none,
-                              )),
-                          initialSelection:doctor.isNotEmpty?doctor[0]['speciality']:'',
-                          label: const Text(
-                            'SPECIALISTS',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                          dropdownMenuEntries: colorEntries,
-                          onSelected: (color) {
-                            setState(() {
-                              selectedColor = color;
-                            });
-                          },
-                        ),
-                      ],),
-                      TextField(
-                          controller: degree,
-                          decoration: const InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                //<-- SEE HERE
-                                borderSide: BorderSide(
-                                    width: 2, color: Colors.indigoAccent),
-                              ),
-                              label: Text(
-                                'DEGREE',
-                                style: TextStyle(color: Colors.grey),
-                              ))),
-                      TextField(
-                          controller: address,
-                          decoration: const InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                //<-- SEE HERE
-                                borderSide: BorderSide(
-                                    width: 2, color: Colors.indigoAccent),
-                              ),
-                              label: Text(
-                                'ADDRESS',
-                                style: TextStyle(color: Colors.grey),
-                              ))),
-                      // TextField(
-                      //     controller: contact,
-                      //     decoration: const InputDecoration(
-                      //         enabledBorder: UnderlineInputBorder(
-                      //           //<-- SEE HERE
-                      //           borderSide: BorderSide(
-                      //               width: 2, color: Colors.indigoAccent),
-                      //         ),
-                      //         label: Text(
-                      //           'SPECIALITY',
-                      //           style: TextStyle(color: Colors.grey),
-                      //         ))),
+              ),
+              const SizedBox(
+                height: 35,
+              ),
+              buildTextField("Full Name", "", false, name),
+              buildTextField("E-mail", "name@gmail.com", false, email),
+              // buildTextField("Password", "********", true),
+              buildDropDown(specialController, specialEntries),
+              buildDropDown(cityController, cityEntries),
+              buildTextField("Specialists", "TLV, Israel", false, contact),
+              buildTextField("City", "TLV, Israel", false, degree),
+              buildTextField("Location", "TLV, Israel", false, address),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-                    ],
-                  )))
-        ],
+  Widget buildDropDown(controller, list) {
+    List<String> dup = <String>['One', 'Two', 'Three', 'Four'];
+    controller.text=controller.text ?? dup[2];
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 35.0),
+      child: DropdownButton(
+        value: controller.text,
+        isExpanded: true,
+        underline: Container(
+          decoration: BoxDecoration(
+            border: Border.all(width: 0.2),
+          ),
+        ),
+        items:list.isEmpty ?dup.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList():list,
+        onChanged: (value) {
+          setState(() {
+            controller.text = value;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget buildTextField(String labelText, String placeholder,
+      bool isPasswordTextField, parameter) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 35.0),
+      child: TextField(
+        controller: parameter,
+        obscureText: isPasswordTextField ? showPassword : false,
+        decoration: InputDecoration(
+            suffixIcon: isPasswordTextField
+                ? IconButton(
+                    onPressed: () {
+                      setState(() {
+                        showPassword = !showPassword;
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.remove_red_eye,
+                      color: Colors.grey,
+                    ),
+                  )
+                : null,
+            contentPadding: const EdgeInsets.only(bottom: 3),
+            labelText: labelText,
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            hintText: placeholder,
+            hintStyle: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            )),
       ),
     );
   }

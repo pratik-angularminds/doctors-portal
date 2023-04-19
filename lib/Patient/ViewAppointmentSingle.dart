@@ -14,7 +14,7 @@ class _ViewAppointmentSingleState extends State<ViewAppointmentSingle> {
   Widget build(BuildContext context) {
     var screenwidth = MediaQuery.of(context).size.width;
     return Scaffold(
-        appBar: AppBar(
+        appBar: AppBar(centerTitle: true,
             backgroundColor: Colors.indigoAccent,
             title: const Text('Appointment')),
         body: Wrap(
