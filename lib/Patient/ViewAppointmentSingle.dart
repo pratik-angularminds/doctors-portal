@@ -17,13 +17,11 @@ class _ViewAppointmentSingleState extends State<ViewAppointmentSingle> {
         appBar: AppBar(centerTitle: true,
             backgroundColor: Colors.indigoAccent,
             title: const Text('Appointment')),
-        body: Wrap(
-          runSpacing: 10,
+        body: ListView(
           children: [
-            Container(
-                margin: EdgeInsets.fromLTRB(screenwidth / 4, 0, 0, 0),
-                child: Image.asset('assets/Icons/doctor.png',
-                    width: screenwidth * 0.5, alignment: Alignment.center)),
+            SizedBox(
+              height: screenwidth/2,
+                child: Image.asset('assets/Icons/doctor.png', alignment: Alignment.center)),
             ListTile(
               title: Text(widget.appointment['doctor']['name'],
                   style: const TextStyle(
@@ -37,67 +35,73 @@ class _ViewAppointmentSingleState extends State<ViewAppointmentSingle> {
                     padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                     child: const Icon(
                       Icons.call,
-                      size: 30,
+                      size: 25,
                       color: Color(0xFF3478A7),
                     )),
                 Text('  ${widget.appointment['doctor']['contact']}')
               ],
             ),
+        const SizedBox(
+          height:10),
             Row(
               children: [
                 Container(
                     padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                     child: const Icon(
                       Icons.mail,
-                      size: 30,
+                      size: 25,
                       color: Color(0xFF3478A7),
                     )),
                 Text('  ${widget.appointment['doctor']['email']}')
               ],
-            ),
+            ),const SizedBox(
+                height:10),
             Row(
               children: [
                 Container(
                     padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                     child: const Icon(
                       Icons.add_location,
-                      size: 30,
+                      size: 25,
                       color: Color(0xFF3478A7),
                     )),
                 Text('  ${widget.appointment['doctor']['address']}')
               ],
-            ),
+            ),const SizedBox(
+                height:10),
             Row(
               children: [
                 Container(
                     padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                     child: const Icon(
                       Icons.timer_sharp,
-                      size: 30,
+                      size: 25,
                       color: Color(0xFF3478A7),
                     )),
                 Text('  ${widget.appointment['appoint']['timeFrom']}')
               ],
-            ),
+            ),const SizedBox(
+                height:10),
             Row(
               children: [
                 Container(
                     padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                     child: const Icon(
                       Icons.calendar_month,
-                      size: 30,
+                      size: 25,
                       color: Color(0xFF3478A7),
                     )),
                 Text('  ${widget.appointment['appoint']['date']}')
               ],
-            ),
+            ),const SizedBox(
+                height:10),
             Row(
               children: [
                 Container(
                     padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                     child: const Icon(
                       Icons.star,
-                      size: 30,
+                      size: 25,
                       color: Color(0xFF3478A7),
                     )),
                 Text('  ${widget.appointment['doctor']['speciality']}')

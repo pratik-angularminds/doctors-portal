@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
+import '../tosters.dart';
 
 class ConfirmedAppointments extends StatefulWidget {
   const ConfirmedAppointments({Key? key}) : super(key: key);
@@ -39,6 +40,7 @@ class _ConfirmedAppointmentsState extends State<ConfirmedAppointments> {
   }
 
   loadData() async {
+    patients = [];
     String docid = await getDoctorID();
     QuerySnapshot querySnapshot =
         await app.where('docId', isEqualTo: docid).get();
@@ -49,7 +51,6 @@ class _ConfirmedAppointmentsState extends State<ConfirmedAppointments> {
         FirebaseFirestore.instance.collection('patient');
     DocumentSnapshot querySnapshot1;
     final DateTime now = DateTime.now();
-
     for (int i = 0; i < appointList.length; i++) {
       querySnapshot1 = await patient.doc(appointList[i]['patientId']).get();
       if (appointList[i]['status'] == 'Confirmed') {
@@ -69,11 +70,30 @@ class _ConfirmedAppointmentsState extends State<ConfirmedAppointments> {
     loadData();
   }
 
+  Future<String> getAppointmentId(appoints) async {
+    QuerySnapshot querySnapshot1 = await app.get();
+    dynamic appointlist =
+        querySnapshot1.docs.map((item) => item.data()).toList();
+    dynamic count = 0;
+    int c = -1;
+    appointlist
+        .map((item) => item['patientId'] == appoints['patientId'] &&
+                item['date'] == appoints['date'] &&
+                item['timeFrom'] == appoints['timeFrom']
+            ? c = count
+            : count++)
+        .toList();
+    dynamic idSarray = querySnapshot1.docs.map((item) => item.id).toList();
+    return idSarray[c];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true,
-          backgroundColor: Colors.indigoAccent, title: const Text('Confirmed')),
+      appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: Colors.indigoAccent,
+          title: const Text('Confirmed')),
       body: ListView(
         children: [
           ...patients.map((item) => Container(
@@ -100,7 +120,19 @@ class _ConfirmedAppointmentsState extends State<ConfirmedAppointments> {
                                 TextStyle(color: Colors.white)),
                             backgroundColor:
                                 MaterialStatePropertyAll(Colors.greenAccent)),
-                        onPressed: () {},
+                        onPressed: () async {
+                          final id = await getAppointmentId(item['appoint']);
+                          FirebaseFirestore.instance
+                              .collection('appointments')
+                              .doc(id)
+                              .update({
+                            'status': 'Completed',
+                          }).then((value) {
+                            Toasters()
+                                .success(context, 'Appointment Completed!!');
+                            loadData();
+                          });
+                        },
                         child: const Text(
                           'Complete',
                           style: TextStyle(color: Colors.white),

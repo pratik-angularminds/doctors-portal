@@ -56,8 +56,12 @@ class _ConfirmAppointState extends State<ConfirmAppoint> {
       return idSarray[c];
     }
     var screenwidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-        body: Column(
+    return Scaffold(appBar: AppBar(
+      backgroundColor: Colors.indigoAccent,
+      title: const Text('Confirmation'),
+      centerTitle: true,
+    ),
+        body: ListView(
       children: [
         Row(children: [
           Expanded(
@@ -116,11 +120,13 @@ class _ConfirmAppointState extends State<ConfirmAppoint> {
           Container(
               padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
               width: screenwidth * 0.94,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: Wrap(
+                crossAxisAlignment:WrapCrossAlignment.start,
                 children: [
                   const Icon(Icons.local_hospital, color: Colors.blue),
-                  Text('   ${doctor['address']}')
+                  Wrap(children:[Text('   ${doctor['address']}',  maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,)])
                 ],
               )),
           Container(

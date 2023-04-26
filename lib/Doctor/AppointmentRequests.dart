@@ -17,6 +17,7 @@ class _AppointmentRequestsState extends State<AppointmentRequests> {
   List doctor = [];
   List appointList = [];
   List patients = [];
+
   getDoctorID() async {
     var id = await SessionManager().get('doctors');
     final CollectionReference doctors =
@@ -51,10 +52,9 @@ class _AppointmentRequestsState extends State<AppointmentRequests> {
         FirebaseFirestore.instance.collection('patient');
     DocumentSnapshot querySnapshot1;
     final DateTime now = DateTime.now();
-
     for (int i = 0; i < appointList.length; i++) {
       querySnapshot1 = await patient.doc(appointList[i]['patientId']).get();
-      if(appointList[i]['status']=='Booked') {
+      if (appointList[i]['status'] == 'Booked') {
         if (int.parse(appointList[i]['date'].split('-')[0]) == now.year &&
             int.parse(appointList[i]['date'].split('-')[1]) == now.month &&
             int.parse(appointList[i]['date'].split('-')[2]) >= now.day) {
@@ -74,13 +74,15 @@ class _AppointmentRequestsState extends State<AppointmentRequests> {
   Future<String> getAppointmentId(appoints) async {
     QuerySnapshot querySnapshot1 = await app.get();
     dynamic appointlist =
-    querySnapshot1.docs.map((item) => item.data()).toList();
+        querySnapshot1.docs.map((item) => item.data()).toList();
     dynamic count = 0;
     int c = -1;
     appointlist
         .map((item) => item['patientId'] == appoints['patientId'] &&
-        item['date'] == appoints['date'] && item['timeFrom'] == appoints['timeFrom']
-        ? c = count : count++)
+                item['date'] == appoints['date'] &&
+                item['timeFrom'] == appoints['timeFrom']
+            ? c = count
+            : count++)
         .toList();
     dynamic idSarray = querySnapshot1.docs.map((item) => item.id).toList();
     return idSarray[c];
@@ -89,22 +91,27 @@ class _AppointmentRequestsState extends State<AppointmentRequests> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(centerTitle: true,
-        backgroundColor: Colors.indigoAccent,
-        title: const Text('Requests')),
+      appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: Colors.indigoAccent,
+          title: const Text('Requests')),
       body: ListView(
         children: [
-          ...patients.map((item) => Container(padding: const EdgeInsets.fromLTRB(0, 5, 0, 1),
+          ...patients.map((item) => Container(
+              padding: const EdgeInsets.fromLTRB(0, 5, 0, 1),
               decoration: const BoxDecoration(
                   border: Border(bottom: BorderSide(width: 0.1))),
-              child: ListTile(contentPadding: const EdgeInsets.all(5.3),
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(5.3),
                 style: ListTileStyle.list,
                 leading: Image.asset(
                   'assets/patient.png',
                 ),
-                title: Text(item['patient']['pname'],style: const TextStyle(color: Colors.greenAccent)),
+                title: Text(item['patient']['pname'],
+                    style: const TextStyle(color: Colors.greenAccent)),
                 subtitle: Text(
-                    'Date: ${item['appoint']['date']}                  Time: ${item['appoint']['timeFrom']}',style: const TextStyle(fontSize: 13)),
+                    'Date: ${item['appoint']['date']}                  Time: ${item['appoint']['timeFrom']}',
+                    style: const TextStyle(fontSize: 13)),
                 trailing: Wrap(
                   spacing: 12,
                   children: <Widget>[
@@ -115,15 +122,15 @@ class _AppointmentRequestsState extends State<AppointmentRequests> {
                             backgroundColor:
                                 MaterialStatePropertyAll(Colors.blueAccent)),
                         onPressed: () async {
-                          final id=await getAppointmentId(item['appoint']);
+                          final id = await getAppointmentId(item['appoint']);
                           FirebaseFirestore.instance
                               .collection('appointments')
                               .doc(id)
                               .update({
                             'status': 'Confirmed',
-                          }).then((value){
-                            Toasters().success(
-                                context, 'Appointment Confirmed!!');
+                          }).then((value) {
+                            Toasters()
+                                .success(context, 'Appointment Confirmed!!');
                             loadData();
                           });
                         },
@@ -138,15 +145,15 @@ class _AppointmentRequestsState extends State<AppointmentRequests> {
                             backgroundColor:
                                 MaterialStatePropertyAll(Colors.redAccent)),
                         onPressed: () async {
-                          final id=await getAppointmentId(item['appoint']);
+                          final id = await getAppointmentId(item['appoint']);
                           FirebaseFirestore.instance
                               .collection('appointments')
                               .doc(id)
                               .update({
                             'status': 'Rejected',
-                          }).then((value){
-                            Toasters().success(
-                                context, 'Appointment Rejected!!');
+                          }).then((value) {
+                            Toasters()
+                                .success(context, 'Appointment Rejected!!');
                             loadData();
                           });
                         },

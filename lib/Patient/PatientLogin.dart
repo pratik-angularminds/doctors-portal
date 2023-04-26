@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:doctors_portal/Doctor/DocRegister.dart';
 import 'package:doctors_portal/Patient/PatientDashboard.dart';
 import 'package:doctors_portal/Patient/PatientRegister.dart';
 import 'package:doctors_portal/tosters.dart';
@@ -45,9 +44,9 @@ class _PatientLogin extends State<PatientLogin> {
     var screenwidth = MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Column(
+      body: ListView(children:[Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
                 height: MediaQuery.of(context).size.height * 0.5,
@@ -244,7 +243,7 @@ class _PatientLogin extends State<PatientLogin> {
                 )
               ],
             )
-          ]),
+          ])]),
     );
   }
 }

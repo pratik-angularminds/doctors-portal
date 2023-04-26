@@ -18,7 +18,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
     var screenheight = MediaQuery.of(context).size.height;
     var screenwidth = MediaQuery.of(context).size.width;
     return Scaffold(
-        body: Column(
+        body:ListView(children:[ Column(
       children: [
        Padding(padding: const EdgeInsets.fromLTRB(30, 0, 20, 0),child: SizedBox(
             height: screenheight * 0.15,
@@ -200,6 +200,6 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
               )
         ),
       ],
-    ));
+    )]));
   }
 }

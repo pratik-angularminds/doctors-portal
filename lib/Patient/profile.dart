@@ -116,7 +116,7 @@ class _ProfileState extends State<Profile> {
                       onTap: () {
                         showDialog(
                             context: context,
-                            builder: (context) {
+                            builder: (con) {
                               return AlertDialog(
                                 title: const Text('Enter Old Password'),
                                 content: TextFormField(
@@ -144,7 +144,7 @@ class _ProfileState extends State<Profile> {
                                               oldPass.text.toString() ||
                                           oldPass.text.isEmpty) {
                                         return Toasters().danger(
-                                            context, 'Wrong Password Entered!');
+                                            con, 'Wrong Password Entered!');
                                       }
 
                                       showDialog(
@@ -180,7 +180,7 @@ class _ProfileState extends State<Profile> {
                                                         await getPatientID();
                                                     if(newPass.text.isEmpty)
                                                       {
-                                                        return Toasters().danger(context, 'Password Required!!');
+                                                        return Toasters().danger(con, 'Password Required!!');
                                                       }
                                                     FirebaseFirestore.instance
                                                         .collection('patient')
@@ -189,10 +189,10 @@ class _ProfileState extends State<Profile> {
                                                       'password': newPass.text,
                                                     }).then((value) {
                                                       Toasters().success(
-                                                          context,
+                                                          con,
                                                           'Password Updated Successfully!!');
                                                       Navigator.push(
-                                                        context,
+                                                        con,
                                                         MaterialPageRoute(
                                                             builder: (context) =>
                                                                 const PatientDashboard()),

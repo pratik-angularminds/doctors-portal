@@ -290,6 +290,7 @@ class _DocEditProfileState extends State<DocEditProfile> {
       padding: const EdgeInsets.only(bottom: 35.0),
       child: DropdownButton(
         value: controller.text,
+        hint: const Text('Select Options'),
         isExpanded: true,
         underline: Container(
           decoration: BoxDecoration(

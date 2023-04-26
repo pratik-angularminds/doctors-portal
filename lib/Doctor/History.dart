@@ -53,7 +53,7 @@ class _HistoryState extends State<History> {
       querySnapshot1 = await patient.doc(appointList[i]['patientId']).get();
       if (int.parse(appointList[i]['date'].split('-')[0]) <= now.year &&
           int.parse(appointList[i]['date'].split('-')[1]) <= now.month &&
-          int.parse(appointList[i]['date'].split('-')[2]) < now.day) {
+          int.parse(appointList[i]['date'].split('-')[2]) < now.day || appointList[i]['status']=='Completed') {
         setState(() {
           patients.add(
               {'appoint': appointList[i], 'patient': querySnapshot1.data()});

@@ -13,6 +13,7 @@ class TakeAppoint extends StatefulWidget {
 
 class MultiSelect extends StatefulWidget {
   final List<String> items;
+
   const MultiSelect({Key? key, required this.items}) : super(key: key);
 
   @override
@@ -21,6 +22,7 @@ class MultiSelect extends StatefulWidget {
 
 class _MultiSelectState extends State<MultiSelect> {
   final List<String> _selectedItems = [];
+
   void _itemChange(String itemValue, bool isSelected) {
     setState(() {
       if (isSelected) {
@@ -71,13 +73,16 @@ class _MultiSelectState extends State<MultiSelect> {
 
 class MultiRadio extends StatefulWidget {
   final List<String> items;
+
   const MultiRadio({Key? key, required this.items}) : super(key: key);
+
   @override
   State<MultiRadio> createState() => _MultiRadioState();
 }
 
 class _MultiRadioState extends State<MultiRadio> {
   dynamic _selectedItems = '';
+
   void _cancel() {
     Navigator.pop(context);
   }
@@ -129,6 +134,7 @@ class _TakeAppointState extends State<TakeAppoint> {
   List doclist = [];
   String _selectedItems = '';
   List<String> _selectedcat = [];
+
   @override
   void initState() {
     super.initState();
@@ -141,17 +147,13 @@ class _TakeAppointState extends State<TakeAppoint> {
 
   getFilterDocs() async {
     QuerySnapshot querySnapshot;
-    if(_selectedItems.isNotEmpty && _selectedcat.isEmpty)
-      {
-        querySnapshot= await doc
-            .where('city', isEqualTo: _selectedItems)
-            .get();
-      }
-      else{
-    querySnapshot= await doc
-        .where('city', isEqualTo: _selectedItems)
-        .where('speciality', whereIn: _selectedcat)
-        .get();
+    if (_selectedItems.isNotEmpty && _selectedcat.isEmpty) {
+      querySnapshot = await doc.where('city', isEqualTo: _selectedItems).get();
+    } else {
+      querySnapshot = await doc
+          .where('city', isEqualTo: _selectedItems)
+          .where('speciality', whereIn: _selectedcat)
+          .get();
     }
     setState(() {
       doclist = querySnapshot.docs.map((doc) => doc.data()).toList();
@@ -292,76 +294,76 @@ class _TakeAppointState extends State<TakeAppoint> {
   @override
   Widget build(BuildContext context) {
     Widget customSearchBar = const Text('Doctors List');
-    var screenheight = MediaQuery.of(context).size.height;
-
+    var screenwidth = MediaQuery.of(context).size.width;
     Widget cardTemplate(doctor) {
       return Card(
         color: Colors.white,
         child: Container(
+          width: screenwidth,
           padding: const EdgeInsets.all(10),
-          height: screenheight * 0.16,
-          child: Row(children: [
-            Image.asset(
-              'assets/Icons/doctor.png',
-              fit: BoxFit.cover,
-            ),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      doctor['name'] ?? ' ',
-                      style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.greenAccent),
-                    ),
-                    Text(
-                      doctor['speciality'] ?? ' ',
-                      style: const TextStyle(fontSize: 13, color: Colors.grey),
-                    ),
-                    Text(
-                      doctor['email'] ?? ' ',
-                      style: const TextStyle(fontSize: 13, color: Colors.grey),
-                    ),
-                   Row(children: [SizedBox(width: 150,
-                        child:Text(
-                     'Address: ${doctor['address']}',
-                      style: const TextStyle(fontSize: 13, color: Colors.grey),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: false,
-                    ))])
-                  ],
-                )),
+          child: Wrap(children: [
+            Wrap(children: [
+              Image.asset(
+                'assets/Icons/doctor.png',
+                fit: BoxFit.cover,
+                width: 90,
+              ),
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                  child: Expanded(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        doctor['name'] ?? ' ',
+                        style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.greenAccent),
+                      ),
+                      Text(
+                        doctor['speciality'] ?? ' ',
+                        style:
+                            const TextStyle(fontSize: 13, color: Colors.grey),
+                      ),
+                      Text(
+                        doctor['email'] ?? ' ',
+                        style:
+                            const TextStyle(fontSize: 13, color: Colors.grey),
+                      ),
+                      Wrap(children: [
+                        SizedBox(
+                            width: 160,
+                            child: Text(
+                              'Address: ${doctor['address']}',
+                              style: const TextStyle(
+                                  fontSize: 13, color: Colors.grey),
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: false,
+                            )),
+                      ]),
+                    ],
+                  ))),
+            ]),
             Expanded(
-                child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          style: ButtonStyle(
-                              foregroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.white),
-                              backgroundColor: const MaterialStatePropertyAll(
-                                  Colors.indigoAccent),
-                              textStyle: const MaterialStatePropertyAll(
-                                  TextStyle(fontSize: 12))),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Calender(doctor)),
-                            );
-                          },
-                          child: const Text('Take Appointment'),
-                        )
-                      ],
-                    )))
+                child: TextButton(
+              style: ButtonStyle(
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.white),
+                  backgroundColor:
+                      const MaterialStatePropertyAll(Colors.indigoAccent),
+                  textStyle:
+                      const MaterialStatePropertyAll(TextStyle(fontSize: 12))),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Calender(doctor)),
+                );
+              },
+              child: const Text('Take Appointment'),
+            ))
           ]),
         ),
       );
@@ -385,7 +387,8 @@ class _TakeAppointState extends State<TakeAppoint> {
         ),
         drawer: Scaffold(
           resizeToAvoidBottomInset: false,
-          appBar: AppBar(backgroundColor: Colors.blueAccent,
+          appBar: AppBar(
+            backgroundColor: Colors.blueAccent,
             title: const Text(
               'Select Categories',
               style: TextStyle(color: Colors.white),
@@ -409,7 +412,9 @@ class _TakeAppointState extends State<TakeAppoint> {
                       child: Chip(
                         shadowColor: Colors.white,
                         label: Text(_selectedItems),
-                        backgroundColor:_selectedItems.isNotEmpty? Colors.indigoAccent:Colors.white,
+                        backgroundColor: _selectedItems.isNotEmpty
+                            ? Colors.indigoAccent
+                            : Colors.white,
                         labelStyle: const TextStyle(color: Colors.white),
                       )),
                   const Divider(
@@ -444,9 +449,17 @@ class _TakeAppointState extends State<TakeAppoint> {
                     children: [
                       Expanded(
                           flex: 3,
-                          child: TextButton(style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.redAccent)),
-                            onPressed: () {Navigator.pop(context);},
-                            child: const Text('cancel',style: TextStyle(color: Colors.white),),
+                          child: TextButton(
+                            style: const ButtonStyle(
+                                backgroundColor:
+                                    MaterialStatePropertyAll(Colors.redAccent)),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              'cancel',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           )),
                       const Spacer(
                         flex: 1,
@@ -454,15 +467,21 @@ class _TakeAppointState extends State<TakeAppoint> {
                       Expanded(
                           flex: 3,
                           child: TextButton(
-                              style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.blueAccent)),
+                            style: const ButtonStyle(
+                                backgroundColor: MaterialStatePropertyAll(
+                                    Colors.blueAccent)),
                             onPressed: () {
-                              if(_selectedItems.isEmpty) {
-                                return Toasters().danger(context, 'Please Select the city');
+                              if (_selectedItems.isEmpty) {
+                                return Toasters()
+                                    .danger(context, 'Please Select the city');
                               }
                               getFilterDocs();
                               Navigator.pop(context);
                             },
-                            child: const Text('submit',style: TextStyle(color: Colors.white),),
+                            child: const Text(
+                              'submit',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ))
                     ],
                   )
@@ -470,7 +489,7 @@ class _TakeAppointState extends State<TakeAppoint> {
               ))),
         ),
         backgroundColor: const Color(0xEDEDEDFF),
-        body: Column(
+        body: ListView(
           children: doclist != []
               ? doclist.map((item) => cardTemplate(item)).toList()
               : [const Text('No list')],

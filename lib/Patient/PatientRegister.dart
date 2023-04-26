@@ -2,9 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctors_portal/Patient/PatientLogin.dart';
 import 'package:doctors_portal/tosters.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/routes/transitions_type.dart';
 //ignore: must_be_immutable
 class PatientRegister extends StatelessWidget {
 
@@ -132,19 +129,25 @@ class PatientRegister extends StatelessWidget {
                         TextStyle(fontSize: screenwidth * 0.05))),
                 onPressed: () async {
                   if (repass == pass && repass != '' && pass != '' && mail!='' && name!='') {
-                    await patient.add({
-                      'name': name,
-                      'password': pass,
-                      'email': mail,
-                      'contact':contact,
-                    });
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          const PatientLogin()
-                    ),
-                  );
+                    QuerySnapshot querySnapshot1 = await patient.where('mail',isEqualTo: mail).get();
+                    dynamic patientslist =
+                    querySnapshot1.docs.map((item) => item.data()).toList();
+                    if(patientslist.length==0){
+                      await patient.add({
+                        'name': name,
+                        'password': pass,
+                        'mail': mail,
+                        'contact': contact,
+                      });
+                      Toasters().success(context, 'User Created Successfully!!!');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const PatientLogin()),
+                      );
+                    }else{
+                      Toasters().danger(context, 'User Already Exists!!');
+                    }
                   }else{
                     if(pass != repass) {
                       Toasters().danger(context, 'Password and Re-enter Password Should be same');
